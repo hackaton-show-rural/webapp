@@ -20,7 +20,7 @@ const ApplicationForm = () => {
   const [talhao, setTalhao] = useState();
   const getCurrentInfo = async (lat, long) => {
     /*     const { data } = await axios.get(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly,daily&appid=0bb25a1321a28d70e418a2a546c3b216&lang=pt_br&units=metric`
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly,daily&appid=${NEXT_PUBLIC_API_TOKEN}&lang=pt_br&units=metric`
     ); */
 
     const mock = {
