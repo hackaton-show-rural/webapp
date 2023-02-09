@@ -17,7 +17,7 @@ const ApplicationForm = () => {
   const [data, setData] = useState<DataType>();
   const [applicationParams, setApplicationParams] = useState();
   const [isEdit, setIsEdit] = useState(false);
-
+  const [talhao, setTalhao] = useState();
   const getCurrentInfo = async (lat, long) => {
     /*     const { data } = await axios.get(
       `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly,daily&appid=0bb25a1321a28d70e418a2a546c3b216&lang=pt_br&units=metric`
@@ -71,6 +71,11 @@ const ApplicationForm = () => {
     setApplicationParams(data);
   };
 
+  const getTalhao = async () => {
+    const { data } = await axios.get(`http://26.2.137.63:8080/talhao/`);
+    setTalhao(data);
+  };
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -86,6 +91,7 @@ const ApplicationForm = () => {
   }, []);
 
   useEffect(() => {
+    getTalhao();
     getWeatherParams();
     if (lat && lng) {
       getCurrentInfo(lat, lng);
@@ -100,7 +106,7 @@ const ApplicationForm = () => {
     );
   }
   return (
-    <div className="m-6 flex flex-col gap-10">
+    <div className="m-6 flex flex-col gap-6">
       <div className="flex flex-row items-center justify-between">
         <h1 className="text-xl font-medium text-slate-800">
           Realizar aplicação
@@ -122,7 +128,12 @@ const ApplicationForm = () => {
           />
         </button>
       </div>
-      <Form isEdit={isEdit} applicationParams={applicationParams} data={data} />
+      <Form
+        isEdit={isEdit}
+        talhao={talhao}
+        applicationParams={applicationParams}
+        data={data}
+      />
     </div>
   );
 };

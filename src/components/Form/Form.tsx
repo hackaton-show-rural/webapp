@@ -1,19 +1,32 @@
 import axios from "axios";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 const inputStyle =
   "border border-gray-300 my-2 p-2 rounded bg-white text-gray-700 text-lg focus:border focus:border-purple-500 focus:outline-none";
-const labelStyle = "text-slate-500 mt-3";
+const labelStyle = "text-slate-500 mt-3 font-semibold";
 const pStyle = "text-slate-800 font-semibold text-lg mt-1 ml-2";
+const infoStyle = "text-slate-500 text-sm mt-1 ml-2 ";
 
-export const Form = ({ data, applicationParams, isEdit }) => {
+export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
+  const [applicationParams, setApplicationParams] = useState(params);
   const {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors, isDirty },
   } = useForm();
+
+  useEffect(() => {
+    if (getValues("tipoApplicacao") === 1) {
+      setApplicationParams(params?.[0]);
+    } else if (getValues("tipoAplicacao") === 2) {
+      setApplicationParams(params?.[1]);
+    } else {
+      setApplicationParams(params?.[2]);
+    }
+  }, [params, getValues("tipoAplicacao")]);
 
   useEffect(() => {
     reset({
@@ -29,27 +42,32 @@ export const Form = ({ data, applicationParams, isEdit }) => {
   const onSubmit = (data) => {
     axios.post(
       "http://26.2.137.63:8080/coleta/save",
-      { ...data, chuva: data.chuva === "sim" ? true : false, editado: isEdit },
+      {
+        ...data,
+        chuva: data.chuva === "sim" ? true : false,
+        hasChanged: isDirty,
+      },
       {
         headers: {
           "Content-Type": "application/json",
         },
       }
     );
-    console.log(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-2">
         <div>
-          <h1>Escolha o metodo de aplicação:</h1>
-          <div className="flex items-center">
+          <h1 className={labelStyle + " mb-2 "}>
+            Escolha o metodo de aplicação:
+          </h1>
+          <div className="ml-2 flex items-center">
             <input
               className="bold h-4 w-4 rounded border-gray-300 bg-gray-100 focus:ring-purple-500 "
               type="radio"
               defaultChecked={true}
-              value={"TERRESTRE"}
+              value={"1"}
               {...register("tipoAplicacao")}
             />
             <label className="ml-2  text-gray-700" htmlFor="sanded">
@@ -57,7 +75,7 @@ export const Form = ({ data, applicationParams, isEdit }) => {
             </label>
           </div>
 
-          <div className="flex items-center">
+          <div className="ml-2 flex items-center">
             <input
               className="h-4 w-4 rounded border-gray-300 bg-gray-100 focus:ring-purple-500 "
               type="radio"
@@ -69,7 +87,7 @@ export const Form = ({ data, applicationParams, isEdit }) => {
               Avião
             </label>
           </div>
-          <div className="flex items-center ">
+          <div className="ml-2 flex items-center">
             <input
               className="h-4 w-4 rounded border-gray-300 bg-gray-100 focus:ring-purple-500 "
               type="radio"
@@ -83,6 +101,17 @@ export const Form = ({ data, applicationParams, isEdit }) => {
           </div>
         </div>
 
+        <div className="flex flex-col">
+          <label className={labelStyle} htmlFor="talhao">
+            Talhão:
+          </label>
+          <select className={inputStyle} name="talhao" id="talhao">
+            {talhao &&
+              talhao.map((item) => {
+                return <option value={item.nome}>{item.nome}</option>;
+              })}
+          </select>
+        </div>
         <div className="flex flex-col">
           <label className={labelStyle} htmlFor="temperaturaAtual">
             Temperatura:
@@ -102,6 +131,10 @@ export const Form = ({ data, applicationParams, isEdit }) => {
               {...register("temperaturaAtual", { required: true })}
             />
           )}
+          <p className={infoStyle}>
+            O valor recomendado é{" "}
+            {applicationParams?.coletaIdeal?.temperaturaIdeal}
+          </p>
         </div>
 
         <div className="flex flex-col">
@@ -122,6 +155,11 @@ export const Form = ({ data, applicationParams, isEdit }) => {
               {...register("velVento", { required: true })}
             />
           )}
+          <p className={infoStyle}>
+            Velocidade do vento ideal é de{" "}
+            {applicationParams?.coletaIdeal?.velocidadeVentoMinima} e{" "}
+            {applicationParams?.coletaIdeal?.velocidadeVentoMaxima}
+          </p>
         </div>
 
         <div className="flex flex-col">
@@ -143,6 +181,11 @@ export const Form = ({ data, applicationParams, isEdit }) => {
               {...register("umidadeRelativa", { required: true })}
             />
           )}
+          <p className={infoStyle}>
+            Velocidade do vento ideal é de{" "}
+            {applicationParams?.coletaIdeal?.umidadeRelativaMinima} e{" "}
+            {applicationParams?.coletaIdeal?.umidadeRelativaMaxima}
+          </p>
         </div>
 
         <div className="flex flex-col">
@@ -159,6 +202,9 @@ export const Form = ({ data, applicationParams, isEdit }) => {
               {...register("chuva", { required: true })}
             />
           )}
+          <p className={infoStyle}>
+            Não é permitido fazer aplicação durante a chuva
+          </p>
         </div>
 
         <div className="flex flex-row gap-4">
@@ -214,7 +260,7 @@ export const Form = ({ data, applicationParams, isEdit }) => {
 
         <div className="flex flex-col">
           <button
-            className="container mx-auto mb-8 block w-full rounded bg-purple-700 p-3 text-lg text-purple-50 transition-all hover:bg-purple-600"
+            className="container mx-auto mb-8 block w-full rounded bg-green-600 p-3 text-lg text-purple-50 transition-all hover:bg-green-500"
             type="submit"
           >
             <b> Iniciar</b>
