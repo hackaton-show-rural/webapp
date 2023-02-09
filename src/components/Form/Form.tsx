@@ -15,6 +15,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
     handleSubmit,
     reset,
     getValues,
+    watch,
     formState: { errors, isDirty },
   } = useForm();
 
@@ -36,6 +37,8 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
       chuva: data?.current?.rain ? "sim" : "não",
       proximaChuva: data?.current?.rain,
       dataInicio: dayjs(data?.curent?.dt).format("YYYY-MM-DD"),
+      dataFim: null,
+      talhao: null,
     });
   }, []);
 
@@ -105,7 +108,12 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
           <label className={labelStyle} htmlFor="talhao">
             Talhão:
           </label>
-          <select className={inputStyle} name="talhao" id="talhao">
+          <select
+            {...register("talhao")}
+            className={inputStyle}
+            name="talhao"
+            id="talhao"
+          >
             {talhao &&
               talhao.map((item) => {
                 return <option value={item.nome}>{item.nome}</option>;
@@ -193,7 +201,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             Esta chovendo:
           </label>
           {!isEdit ? (
-            <p className={pStyle}>{data?.current?.rain ? "sim" : "não"}</p>
+            <p className={pStyle}>{data?.current?.rain ? "Sim" : "Não"}</p>
           ) : (
             <input
               className={inputStyle}
@@ -236,13 +244,13 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
                 className={inputStyle}
                 type="date"
                 id="chuva"
-                {...register("chuva", { required: true })}
+                {...register("dataFim", { required: true })}
               />
             )}
           </div>
         </div>
 
-        <div className="flex flex-col">
+        {/*         <div className="flex flex-col">
           <label className={labelStyle} htmlFor="proximaChuva">
             Proxima chuva (horas)
           </label>
@@ -256,7 +264,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
               {...register("proximaChuva", { required: true })}
             />
           )}
-        </div>
+        </div> */}
 
         <div className="flex flex-col">
           <button
