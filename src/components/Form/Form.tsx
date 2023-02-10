@@ -37,7 +37,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
       umidadeRelativa: data?.current?.humidity,
       chuva: data?.current?.rain ? "sim" : "não",
       proximaChuva: data?.current?.rain,
-      dataInicio: dayjs(data?.curent?.dt).format("YYYY-MM-DD"),
+      dataInicio: dayjs(data?.curent?.dt).format("YYYY-MM-DD hh:mm:ss"),
       dataFim: null,
       talhao: null,
     });
@@ -66,7 +66,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
         ...data,
         chuva: data.chuva === "sim" ? true : false,
         hasChanged: isDirty,
-        dataInicio: dayjs(data.dataInicio).toISOString(),
+        dataInicio: dayjs(data?.curent?.dt).format("YYYY-MM-DD hh:mm:ss"),
       },
       {
         headers: {
@@ -76,6 +76,10 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
     );
     setId(res.id);
   };
+  q;
+  useEffect(() => {
+    console.log(watch("talhao"));
+  }, [watch("talhao")]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -89,8 +93,8 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
               className="bold h-4 w-4 rounded border-gray-300 bg-gray-100 focus:ring-purple-500 "
               type="radio"
               defaultChecked={true}
-              value={"TERRESTRE"}
-              {...register("tipoAplicacao")}
+              value={1}
+              {...register("tipoAplicacaoId")}
             />
             <label className="ml-2  text-gray-700" htmlFor="sanded">
               Pulverizador
@@ -103,7 +107,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
               type="radio"
               value={2}
               defaultChecked={false}
-              {...register("tipoAplicacao")}
+              {...register("tipoAplicacaoId")}
             />
             <label className="ml-2 text-gray-700" htmlFor="sanded">
               Avião
@@ -115,7 +119,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
               type="radio"
               value={3}
               defaultChecked={false}
-              {...register("tipoAplicacao")}
+              {...register("tipoAplicacaoId")}
             />
             <label className="ml-2 text-gray-700" htmlFor="paint">
               Vant (drone):
@@ -128,7 +132,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             Talhão:
           </label>
           <select
-            {...(register("talhao"), { required: true })}
+            {...register("talhao", { required: true })}
             className={inputStyle}
             name="talhao"
             id="talhao"
@@ -136,7 +140,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             {talhao &&
               talhao.map((item, idx) => {
                 return (
-                  <option key={idx} value={item.nome}>
+                  <option key={idx} value={item}>
                     {item.nome}
                   </option>
                 );
