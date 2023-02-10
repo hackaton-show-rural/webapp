@@ -181,8 +181,9 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             />
           )}
           <p className={infoStyle}>
-            O valor recomendado é{" "}
-            {applicationParams?.coletaIdeal?.temperaturaIdeal}
+            A temperatura ideal é 20°C <br />
+            Min. 10°C <br />
+            Max. 30°C {applicationParams?.coletaIdeal?.temperaturaIdeal}
           </p>
         </div>
 
@@ -191,7 +192,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             Velocidade do vento:
           </label>
           {!isEdit ? (
-            <p className={pStyle}>{data?.current?.wind_speed}</p>
+            <p className={pStyle}>{data?.current?.wind_speed}Km/h</p>
           ) : (
             <input
               className={inputStyle}
@@ -205,9 +206,9 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             />
           )}
           <p className={infoStyle}>
-            Velocidade do vento ideal é de{" "}
-            {applicationParams?.coletaIdeal?.velocidadeVentoMinima} e{" "}
-            {applicationParams?.coletaIdeal?.velocidadeVentoMaxima}
+            Velocidade ideal do vento está entre 3 e 10Km/h{" "}
+            {applicationParams?.coletaIdeal?.velocidadeVentoMinima}
+            {applicationParams?.coletaIdeal?.velocidadeVentoMaxima}{" "}
           </p>
         </div>
 
@@ -217,7 +218,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
           </label>
 
           {!isEdit ? (
-            <p className={pStyle}>{data?.current?.humidity}</p>
+            <p className={pStyle}>{data?.current?.humidity}%</p>
           ) : (
             <input
               className={inputStyle}
@@ -231,15 +232,19 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             />
           )}
           <p className={infoStyle}>
-            Velocidade do vento ideal é de{" "}
-            {applicationParams?.coletaIdeal?.umidadeRelativaMinima} e{" "}
-            {applicationParams?.coletaIdeal?.umidadeRelativaMaxima}
+            A Umidade relativa do ar ideal é 70% à 90%".
+            <br />
+            Min. 60%
+            <br />
+            Max. 95% {
+              applicationParams?.coletaIdeal?.umidadeRelativaMinima
+            } e {applicationParams?.coletaIdeal?.umidadeRelativaMaxima}
           </p>
         </div>
 
         <div className="flex flex-col">
           <label className={labelStyle} htmlFor="chuva">
-            Esta chovendo:
+            Está chovendo:
           </label>
           {!isEdit ? (
             <p className={pStyle}>{data?.current?.rain ? "Sim" : "Não"}</p>
@@ -252,7 +257,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             />
           )}
           <p className={infoStyle}>
-            Não é permitido fazer aplicação durante a chuva
+            Não é recomendado coletar amostras quando está chovendo.
           </p>
         </div>
 
@@ -328,7 +333,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
                   onClick={() => remove(index)}
                 >
                   <Image
-                    src="trashsvg.svg"
+                    src="/trashsvg.svg"
                     alt="excluir"
                     width={30}
                     height={30}
@@ -349,7 +354,11 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
 
         <div className="flex flex-col">
           <button
-            className="container mx-auto mb-8 block w-full rounded bg-green-600 p-3 text-lg text-purple-50 transition-all hover:bg-green-500"
+            className={`container mx-auto mb-8 block w-full rounded ${
+              id
+                ? "bg-red-600 hover:bg-red-500"
+                : "bg-green-600 hover:bg-green-500"
+            }  p-3 text-lg text-purple-50 transition-all `}
             type="submit"
           >
             <b> {id ? "Finalizar" : "Iniciar"} </b>

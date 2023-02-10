@@ -8,6 +8,7 @@ import { TalhaoContext } from "../_app";
 
 const Resume = () => {
   const [talhao, setTalhao] = useState();
+  const [talhaoNovo, setTalhaoNovo] = useState(0);
   const getTalhao = async () => {
     const { data } = await axios.get(`http://26.2.137.63:8080/talhao/`);
     setTalhao(data);
@@ -22,7 +23,7 @@ const Resume = () => {
 
   useEffect(() => {
     getTalhao();
-  }, []);
+  }, [talhaoNovo]);
 
   if (!talhao) return <h1>loading...</h1>;
 
@@ -92,7 +93,10 @@ const Resume = () => {
           <div className="bg-[rgb(0, 0, 0, 0.25)] absolute top-0 left-0 h-full w-full ">
             .
           </div>
-          <TalhaoForm setShowCadastro={setShowCadastro} />
+          <TalhaoForm
+            setTalhaoNovo={setTalhaoNovo}
+            setShowCadastro={setShowCadastro}
+          />
         </>
       )}
     </>

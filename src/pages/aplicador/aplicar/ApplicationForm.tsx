@@ -19,51 +19,13 @@ const ApplicationForm = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [talhao, setTalhao] = useState();
   const getCurrentInfo = async (lat, long) => {
-    /*     const { data } = await axios.get(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly,daily&appid=${NEXT_PUBLIC_API_TOKEN}&lang=pt_br&units=metric`
-    ); */
-
-    const mock = {
-      lat: -25.5026,
-      lon: -49.2908,
-      timezone: "America/Sao_Paulo",
-      timezone_offset: -10800,
-      current: {
-        dt: 1675964710,
-        sunrise: 1675933126,
-        sunset: 1675980244,
-        temp: 30.14,
-        feels_like: 30.5,
-        pressure: 1015,
-        humidity: 45,
-        dew_point: 16.9,
-        uvi: 7.87,
-        clouds: 0,
-        visibility: 10000,
-        wind_speed: 2.57,
-        wind_deg: 250,
-        weather: [
-          {
-            id: 800,
-            main: "Clear",
-            description: "céu limpo",
-            icon: "01d",
-          },
-        ],
-      },
-      alerts: [
-        {
-          sender_name: "Instituto Nacional de Meteorologia",
-          event: "Tempestade",
-          start: 1675949700,
-          end: 1676034000,
-          description:
-            "INMET publica aviso iniciando em: 09/02/2023 10:35. Chuva entre 30 e 60 mm/h ou 50 e 100 mm/dia, ventos intensos (60-100 km/h), e queda de granizo. Risco de corte de energia elétrica, estragos em plantações,  queda de árvores e de alagamentos.",
-          tags: ["Wind"],
-        },
-      ],
-    };
-    setData(mock);
+    axios
+      .get(
+        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly,daily&appid=bc54e25619ce3cce4c597311a6e8a835&lang=pt_br&units=metric`
+      )
+      .then((res) => {
+        setData(res.data);
+      });
   };
 
   const getWeatherParams = async () => {

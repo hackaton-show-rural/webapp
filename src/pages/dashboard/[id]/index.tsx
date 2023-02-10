@@ -1,10 +1,10 @@
 import axios from "axios";
 import dayjs from "dayjs";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import LatestApplication from "../../../components/LatestApplication";
 import { TalhaoContext } from "../../_app";
-
 const Index = () => {
   const context = useContext(TalhaoContext);
 
@@ -47,10 +47,17 @@ const Index = () => {
                 }`}
                 key={idx}
               >
-                <details>
-                  <summary>
+                <details className="flex w-full flex-row items-center">
+                  <summary className="flex gap-2 p-2">
+                    <Image
+                      src="/arrow.svg"
+                      alt="baixo"
+                      width={24}
+                      height={24}
+                    />
+
+                    <Image src="/event.svg" alt="data" width={24} height={24} />
                     <p>
-                      data:{" "}
                       {dayjs(application?.dataInicio).isValid()
                         ? dayjs(application?.dataInicio).format("DD/MM/YYYY")
                         : "--"}
@@ -110,6 +117,47 @@ const Index = () => {
                         </li>
                       </ul>
                     </div>
+
+                    <details className="flex w-full flex-row items-center">
+                      <summary className="flex gap-2 p-2">
+                        <Image
+                          src="/arrow.svg"
+                          alt="baixo"
+                          width={24}
+                          height={24}
+                        />
+                        <p className="font-semibold text-slate-500">Produtos</p>
+                      </summary>
+                      <div className="flex flex-col gap-2">
+                        {application?.produtos?.map((produto, idx) => {
+                          return (
+                            <div
+                              className={`flex flex-row gap-4 p-2 ${
+                                idx % 2 === 0 ? "bg-green-50" : null
+                              }`}
+                              key={idx}
+                            >
+                              <p>
+                                <span className="mt-3 font-semibold text-slate-500">
+                                  Nome:
+                                </span>{" "}
+                                <span className="font-semibold">
+                                  {produto?.nome}{" "}
+                                </span>
+                              </p>
+                              <p>
+                                <span className="mt-3 font-semibold text-slate-500">
+                                  dosagem:
+                                </span>{" "}
+                                <span className="font-semibold">
+                                  {produto?.dosagem}{" "}
+                                </span>
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </details>
                   </div>
                 </details>
               </div>

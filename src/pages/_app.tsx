@@ -11,6 +11,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <TalhaoContext.Provider value={values}>
       <Component {...pageProps} />
+      
     </TalhaoContext.Provider>
   );
 };

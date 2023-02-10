@@ -6,7 +6,7 @@ import { TalhaoContext } from "../../pages/_app";
 const labelStyle = "text-slate-500 mt-3 font-semibold";
 const inputStyle =
   "border border-gray-300 my-2 p-2 rounded bg-white text-gray-700 text-lg focus:border focus:border-purple-500 focus:outline-none";
-const TalhaoForm = () => {
+const TalhaoForm = ({ setTalhaoNovo }) => {
   const { register, handleSubmit, setValue } = useForm();
 
   const ctx = useContext(TalhaoContext);
@@ -21,6 +21,7 @@ const TalhaoForm = () => {
         },
       })
       .then(() => {
+        setTalhaoNovo((prev) => prev + 1);
         setShowCadastro(false);
       });
   };
