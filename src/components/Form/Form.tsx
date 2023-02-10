@@ -10,6 +10,7 @@ const infoStyle = "text-slate-500 text-sm mt-1 ml-2 ";
 
 export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
   const [applicationParams, setApplicationParams] = useState(params);
+  const [id, setId] = useState(0);
   const {
     register,
     handleSubmit,
@@ -20,7 +21,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
   } = useForm();
 
   useEffect(() => {
-    if (getValues("tipoApplicacao") === 1) {
+    if (getValues("tipoApplicacao") === "TERRESTRE") {
       setApplicationParams(params?.[0]);
     } else if (getValues("tipoAplicacao") === 2) {
       setApplicationParams(params?.[1]);
@@ -43,12 +44,29 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
   }, []);
 
   const onSubmit = (data) => {
-    axios.post(
+    if (id) {
+      axios.post(
+        "http://26.2.137.63:8080/coleta/save",
+        {
+          id,
+          finalizado: true,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return;
+    }
+
+    const res = axios.post(
       "http://26.2.137.63:8080/coleta/save",
       {
         ...data,
         chuva: data.chuva === "sim" ? true : false,
         hasChanged: isDirty,
+        dataInicio: dayjs(data.dataInicio).toISOString(),
       },
       {
         headers: {
@@ -56,6 +74,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
         },
       }
     );
+    setId(res.id);
   };
 
   return (
@@ -70,7 +89,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
               className="bold h-4 w-4 rounded border-gray-300 bg-gray-100 focus:ring-purple-500 "
               type="radio"
               defaultChecked={true}
-              value={"1"}
+              value={"TERRESTRE"}
               {...register("tipoAplicacao")}
             />
             <label className="ml-2  text-gray-700" htmlFor="sanded">
@@ -109,14 +128,18 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             Talhão:
           </label>
           <select
-            {...register("talhao")}
+            {...(register("talhao"), { required: true })}
             className={inputStyle}
             name="talhao"
             id="talhao"
           >
             {talhao &&
-              talhao.map((item) => {
-                return <option value={item.nome}>{item.nome}</option>;
+              talhao.map((item, idx) => {
+                return (
+                  <option key={idx} value={item.nome}>
+                    {item.nome}
+                  </option>
+                );
               })}
           </select>
         </div>
@@ -271,7 +294,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             className="container mx-auto mb-8 block w-full rounded bg-green-600 p-3 text-lg text-purple-50 transition-all hover:bg-green-500"
             type="submit"
           >
-            <b> Iniciar</b>
+            <b> {id ? "Finalizar" : "Iniciar"} </b>
           </button>
         </div>
       </div>
