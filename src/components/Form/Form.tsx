@@ -76,7 +76,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
     );
     setId(res.id);
   };
-  q;
+
   useEffect(() => {
     console.log(watch("talhao"));
   }, [watch("talhao")]);
@@ -140,7 +140,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
             {talhao &&
               talhao.map((item, idx) => {
                 return (
-                  <option key={idx} value={item}>
+                  <option key={idx} value={item.id}>
                     {item.nome}
                   </option>
                 );
