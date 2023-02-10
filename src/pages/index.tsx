@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
-
 const Home: NextPage = () => {
   return (
     <>
@@ -11,13 +11,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 ">
-        <h1 className="text-4xl font-bold text-black">Defenser</h1>
+        <Image src="/defenser.png" alt="defenser" width={500} height={100} />
 
         <div className="flex flex-col gap-4 ">
-          <button className="rounded-md bg-purple-700 p-4 text-lg text-purple-50 transition-all hover:bg-purple-600">
+          <button className="container mt-2 rounded bg-green-500 p-4  text-lg text-purple-50 transition-all hover:bg-green-500">
             <Link href={"/dashboard"}>Entrar como administrador</Link>
           </button>
-          <button className="rounded-md bg-purple-700 p-4 text-lg text-purple-50 transition-all hover:bg-purple-600">
+          <button className="container mt-2 rounded bg-green-500 p-4  text-lg text-purple-50 transition-all hover:bg-green-500">
             <Link href={"/aplicador"}>Entrar como usuário</Link>
           </button>
         </div>

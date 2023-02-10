@@ -1,11 +1,14 @@
 import axios from "axios";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LatestApplication from "../../../components/LatestApplication";
-import { useTalhaoContext } from "../../../lib/talhaoContext/useTalhaoContext";
+import { TalhaoContext } from "../../_app";
+
 const Index = () => {
-  const { setShowCadastro } = useTalhaoContext();
+  const context = useContext(TalhaoContext);
+
+  const { setShowCadastro } = context;
 
   const router = useRouter();
   const { id } = router.query;
@@ -42,11 +45,73 @@ const Index = () => {
                 className={`flex flex-row gap-4 p-2 ${
                   idx % 2 === 0 ? "bg-green-100" : null
                 }`}
+                key={idx}
               >
-                <p className="ml-4">
-                  data:{" "}
-                  {dayjs(application?.dataInicio).format("DD/MM/YYYY HH:mm")}
-                </p>
+                <details>
+                  <summary>
+                    <p>
+                      data:{" "}
+                      {dayjs(application?.dataInicio).isValid()
+                        ? dayjs(application?.dataInicio).format("DD/MM/YYYY")
+                        : "--"}
+                    </p>
+                  </summary>
+                  <div className="flex flex-col gap-2">
+                    <div className="mt-2 flex flex-row gap-8 ">
+                      <p>
+                        <span className="mt-3 font-semibold text-slate-500">
+                          Fim:
+                        </span>{" "}
+                        <span className="font-semibold ">
+                          {dayjs(application?.dataFim).isValid()
+                            ? dayjs(application?.dataFim).format(
+                                "DD/MM/YYYY  HH:mm"
+                              )
+                            : "--"}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between gap-4">
+                      <ul className="flex flex-col gap-2">
+                        <li>
+                          {" "}
+                          <span className="mt-3 font-semibold text-slate-500">
+                            Temperatura:
+                          </span>{" "}
+                          <span className="font-semibold">
+                            {application?.temperaturaAtual} °C{" "}
+                          </span>
+                        </li>
+                        <li>
+                          <span className="mt-3 font-semibold text-slate-500">
+                            Umidade:
+                          </span>{" "}
+                          <span className="font-semibold">
+                            {application?.umidadeRelativa}{" "}
+                          </span>
+                        </li>
+                      </ul>
+                      <ul className="flex flex-col gap-2">
+                        <li>
+                          <span className="mt-3 font-semibold text-slate-500">
+                            Vento:
+                          </span>{" "}
+                          <span className="font-semibold">
+                            {application?.velVento}{" "}
+                          </span>
+                        </li>
+                        <li>
+                          <span className="mt-3 font-semibold text-slate-500">
+                            Chuva:
+                          </span>{" "}
+                          <span className="font-semibold">
+                            {application?.chuva ? "Sim" : "Não"}{" "}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </details>
               </div>
             );
           })}

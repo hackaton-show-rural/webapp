@@ -1,13 +1,17 @@
 import { type AppType } from "next/dist/shared/lib/utils";
-import { TalhaoProvider } from "../lib/talhaoContext/talhaoContext";
+import { createContext, useState } from "react";
 
 import "../styles/globals.css";
+export const TalhaoContext = createContext({});
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const [showCadastro, setShowCadastro] = useState(false);
+  const values = { showCadastro, setShowCadastro };
+
   return (
-    <TalhaoProvider>
+    <TalhaoContext.Provider value={values}>
       <Component {...pageProps} />
-    </TalhaoProvider>
+    </TalhaoContext.Provider>
   );
 };
 

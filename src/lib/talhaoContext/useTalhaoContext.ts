@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { TalhaoContext } from "./TalhaoContext";
+import TalhaoContext from "./taco";
 
-export const useTalhaoContext = () => {
+const useTalhaoContext = () => {
   const context = useContext(TalhaoContext);
 
   if (context === undefined) {
@@ -12,3 +12,5 @@ export const useTalhaoContext = () => {
 
   return context;
 };
+
+export default useTalhaoContext;

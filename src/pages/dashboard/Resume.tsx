@@ -2,16 +2,24 @@ import axios from "axios";
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TalhaoForm from "../../components/TalhaoForm";
-import { useTalhaoContext } from "../../lib/talhaoContext/useTalhaoContext";
+import { TalhaoContext } from "../_app";
+
 const Resume = () => {
   const [talhao, setTalhao] = useState();
   const getTalhao = async () => {
     const { data } = await axios.get(`http://26.2.137.63:8080/talhao/`);
     setTalhao(data);
   };
-  const { setShowCadastro, showCadastro } = useTalhaoContext();
+  const ctx = useContext(TalhaoContext);
+
+  const { showCadastro, setShowCadastro } = ctx;
+
+  useEffect(() => {
+    console.log("showCadastro", showCadastro);
+  }, [showCadastro]);
+
   useEffect(() => {
     getTalhao();
   }, []);
@@ -27,15 +35,13 @@ const Resume = () => {
           </h1>
           <button
             className=" align-center border-[rgb(208, 213, 221)] h-[36] w-[36] justify-center rounded-xl border p-[10px]"
-            onClick={() => {
-              setShowCadastro(true);
-            }}
+            onClick={() => setShowCadastro(true)}
           >
             <Image
               style={{
                 filter: "invert(0.4) sepia(.01) saturate(0) hue-rotate(0deg)",
               }}
-              src="edit.svg"
+              src="/add.svg"
               alt="editar"
               width={24}
               height={24}
@@ -81,7 +87,14 @@ const Resume = () => {
           })}
         </div>
       </div>
-      {showCadastro && <TalhaoForm setShowCadastro={setShowCadastro} />}
+      {showCadastro && (
+        <>
+          <div className="bg-[rgb(0, 0, 0, 0.25)] absolute top-0 left-0 h-full w-full ">
+            .
+          </div>
+          <TalhaoForm setShowCadastro={setShowCadastro} />
+        </>
+      )}
     </>
   );
 };

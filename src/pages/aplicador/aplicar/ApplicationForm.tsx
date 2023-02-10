@@ -1,7 +1,7 @@
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Form } from "../../components/Form";
+import { Form } from "../../../components/Form";
 const geoOptions = {
   enableHighAccuracy: true,
   timeout: 50000,
@@ -120,7 +120,7 @@ const ApplicationForm = () => {
             style={{
               filter: "invert(0.4) sepia(.01) saturate(0) hue-rotate(0deg)",
             }}
-            src="edit.svg"
+            src="/edit.svg"
             alt="editar"
             width={24}
             height={24}

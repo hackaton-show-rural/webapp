@@ -1,5 +1,7 @@
 import axios from "axios";
 import dayjs from "dayjs";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 const inputStyle =
@@ -7,15 +9,17 @@ const inputStyle =
 const labelStyle = "text-slate-500 mt-3 font-semibold";
 const pStyle = "text-slate-800 font-semibold text-lg mt-1 ml-2";
 const infoStyle = "text-slate-500 text-sm mt-1 ml-2 ";
-
 const defaultValues = {
-  nome: 0,
-  dosagem: 0,
+  nome: "",
+  dosagem: 0.0,
 };
 
 export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
   const [applicationParams, setApplicationParams] = useState(params);
   const [id, setId] = useState(0);
+
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -57,11 +61,15 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
 
   const onSubmit = (data) => {
     if (id) {
-      axios.post("http://26.2.137.63:8080/coleta/finalSave", id, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      axios
+        .post("http://26.2.137.63:8080/coleta/finalSave", id, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(() => {
+          router.push("/aplicador");
+        });
       return;
     }
 
@@ -287,7 +295,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
           {fields?.map((item, index) => (
             <div
               key={index}
-              className="flex flex-col rounded-sm bg-slate-200 p-2 "
+              className="mb-2 flex flex-col rounded-md bg-slate-100 p-2"
             >
               <div className="flex flex-col">
                 <label className={labelStyle} htmlFor="produtos">
@@ -313,20 +321,26 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
                   })}
                 />
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex justify-end">
                 <button
-                  className="container  rounded bg-red-500 p-1 text-lg text-purple-50 transition-all hover:bg-red-500"
+                  className="p-1 text-lg text-purple-50 transition-all hover:bg-red-500"
                   type="button"
                   onClick={() => remove(index)}
                 >
-                  remover
+                  <Image
+                    src="trashsvg.svg"
+                    alt="excluir"
+                    width={30}
+                    height={30}
+                  />
                 </button>
               </div>
             </div>
           ))}
           <button
-            className="container rounded bg-green-500 p-1 text-lg text-purple-50 transition-all hover:bg-green-500"
+            className="container mt-2 rounded bg-green-500 p-1 text-lg text-purple-50 transition-all hover:bg-green-500"
             type="button"
+            disabled={!!id}
             onClick={() => append(defaultValues)}
           >
             Adicionar produto

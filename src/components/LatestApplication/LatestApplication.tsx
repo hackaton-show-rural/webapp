@@ -59,6 +59,21 @@ const LatestApplication = ({ application, setShowCadastro }) => {
           </li>
         </ul>
       </div>
+
+      <details>
+        <summary>Produtos utilizados</summary>
+        <ul className="gap-1">
+          {application?.produtos?.map((item, idx) => {
+            return (
+              <li id={idx}>
+                <span className="font-semibold">
+                  <br />- {item.nome}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </details>
     </div>
   );
 };
