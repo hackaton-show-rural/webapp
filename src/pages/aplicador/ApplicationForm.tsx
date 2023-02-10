@@ -81,7 +81,6 @@ const ApplicationForm = () => {
       (position) => {
         setLat(position.coords.latitude);
         setLng(position.coords.longitude);
-        console.log(position.coords.latitude, position.coords.longitude);
       },
       (err) => {
         console.log(err);

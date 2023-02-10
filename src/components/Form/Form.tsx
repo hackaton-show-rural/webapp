@@ -1,12 +1,17 @@
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 const inputStyle =
   "border border-gray-300 my-2 p-2 rounded bg-white text-gray-700 text-lg focus:border focus:border-purple-500 focus:outline-none";
 const labelStyle = "text-slate-500 mt-3 font-semibold";
 const pStyle = "text-slate-800 font-semibold text-lg mt-1 ml-2";
 const infoStyle = "text-slate-500 text-sm mt-1 ml-2 ";
+
+const defaultValues = {
+  nome: 0,
+  dosagem: 0,
+};
 
 export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
   const [applicationParams, setApplicationParams] = useState(params);
@@ -17,6 +22,7 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
     reset,
     getValues,
     watch,
+    control,
     formState: { errors, isDirty },
   } = useForm();
 
@@ -39,47 +45,46 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
       proximaChuva: data?.current?.rain,
       dataInicio: dayjs(data?.curent?.dt).format("YYYY-MM-DD hh:mm:ss"),
       dataFim: null,
-      talhao: null,
+      talhaoId: null,
+      produtos: [],
     });
   }, []);
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "produtos",
+  });
+
   const onSubmit = (data) => {
     if (id) {
-      axios.post(
+      axios.post("http://26.2.137.63:8080/coleta/finalSave", id, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return;
+    }
+
+    axios
+      .post(
         "http://26.2.137.63:8080/coleta/save",
         {
-          id,
-          finalizado: true,
+          ...data,
+          chuva: data.chuva === "sim" ? true : false,
+          hasChanged: isDirty,
+          dataInicio: dayjs(data?.curent?.dt).format("YYYY-MM-DD hh:mm:ss"),
+          dataFim: dayjs(data?.dataFim).isValid()
+            ? dayjs(data?.dataFim).format("YYYY-MM-DD hh:mm:ss")
+            : null,
         },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
-      );
-      return;
-    }
-
-    const res = axios.post(
-      "http://26.2.137.63:8080/coleta/save",
-      {
-        ...data,
-        chuva: data.chuva === "sim" ? true : false,
-        hasChanged: isDirty,
-        dataInicio: dayjs(data?.curent?.dt).format("YYYY-MM-DD hh:mm:ss"),
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    setId(res.id);
+      )
+      .then((res) => setId(res.data.id));
   };
-
-  useEffect(() => {
-    console.log(watch("talhao"));
-  }, [watch("talhao")]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -128,14 +133,15 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
         </div>
 
         <div className="flex flex-col">
-          <label className={labelStyle} htmlFor="talhao">
+          <label className={labelStyle} htmlFor="talhaoId">
             Talhão:
           </label>
           <select
-            {...register("talhao", { required: true })}
+            {...register("talhaoId", { required: true })}
             className={inputStyle}
-            name="talhao"
-            id="talhao"
+            name="talhaoId"
+            id="talhaoId"
+            defaultValue={""}
           >
             {talhao &&
               talhao.map((item, idx) => {
@@ -277,21 +283,55 @@ export const Form = ({ data, applicationParams: params, isEdit, talhao }) => {
           </div>
         </div>
 
-        {/*         <div className="flex flex-col">
-          <label className={labelStyle} htmlFor="proximaChuva">
-            Proxima chuva (horas)
-          </label>
-          {!isEdit ? (
-            <p className={pStyle}>{data?.current?.rain}</p>
-          ) : (
-            <input
-              className={inputStyle}
-              type="number"
-              id="proximaChuva"
-              {...register("proximaChuva", { required: true })}
-            />
-          )}
-        </div> */}
+        <div>
+          {fields?.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col rounded-sm bg-slate-200 p-2 "
+            >
+              <div className="flex flex-col">
+                <label className={labelStyle} htmlFor="produtos">
+                  Produto:
+                </label>
+                <input
+                  type="text"
+                  className={inputStyle}
+                  {...register(`produtos.${index}.nome` as const, {
+                    required: true,
+                  })}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className={labelStyle} htmlFor="produtos">
+                  Dosagem:
+                </label>
+                <input
+                  type="number"
+                  className={inputStyle}
+                  {...register(`produtos.${index}.dosagem` as const, {
+                    required: true,
+                  })}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <button
+                  className="container  rounded bg-red-500 p-1 text-lg text-purple-50 transition-all hover:bg-red-500"
+                  type="button"
+                  onClick={() => remove(index)}
+                >
+                  remover
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            className="container rounded bg-green-500 p-1 text-lg text-purple-50 transition-all hover:bg-green-500"
+            type="button"
+            onClick={() => append(defaultValues)}
+          >
+            Adicionar produto
+          </button>
+        </div>
 
         <div className="flex flex-col">
           <button

@@ -1,1 +1,1 @@
-export { default } from "./TalhaoCard";
+export {default} from "./TalhaoForm";
